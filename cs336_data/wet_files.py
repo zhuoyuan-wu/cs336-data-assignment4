@@ -5,8 +5,8 @@ import urllib.request
 from functools import cached_property
 from io import BytesIO
 from pathlib import Path
-
 from collections.abc import Callable
+
 import fasttext
 import modal
 import polars as pl
@@ -15,10 +15,10 @@ from warcio.warcwriter import WARCWriter
 
 from cs336_data.common import get_shared_assets_path
 from cs336_data.modal_utils import VOLUME_MOUNTS, app, build_image
+from cs336_data.langid import identify_language
 from furu import Furu
 
 BASE_URL = "https://data.commoncrawl.org/"
-
 
 
 class _EnglishWetFile(Furu[Path]):
@@ -28,8 +28,15 @@ class _EnglishWetFile(Furu[Path]):
         output_path = self.data_dir / "data.warc.wet.gz"
 
         self.logger.info("Loading English language identifier")
-        is_english: Callable[[str], bool] = "TODO"
-        assert is_english != "TODO", "you need to implement is_english. we use probability >= 0.7 with https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin"
+
+        # 使用 fasttext lid.176.bin 判定英语置信度是否 >= 0.70
+        def check_english(text: str) -> bool:
+            if not text:
+                return False
+            lang, score = identify_language(text)
+            return lang == "en" and score >= 0.70
+
+        is_english: Callable[[str], bool] = check_english
 
         total_text = 0
         skipped_text = 0

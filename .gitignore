@@ -166,3 +166,19 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 local-shared-data/
+
+# 忽略数据与二进制大文件
+local-shared-data/
+*.bin
+*.warc.gz
+*.wet.gz
+/tmp/
+
+# 忽略 Python 编译与测试缓存
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# 忽略临时输出
+*.log

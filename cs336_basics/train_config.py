@@ -1,3 +1,4 @@
+# cs336_basics/train_config.py
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -24,13 +25,21 @@ class ModelConfig:
 class TrainingConfig:
     seed: int = 0
     dtype: str = "bfloat16"
-    train_batch_size: int = 128
-    eval_batch_size: int = 128
-    train_steps: int = 16_384
-    gradient_accumulation_steps: int = 1
+    
+    # 单卡 4090D 安全显存配置 (14-16GB)
+    train_batch_size: int = 64
+    eval_batch_size: int = 64
+    gradient_accumulation_steps: int = 4  # 等效 Global Batch Size = 256
+    
+    # 严格 3 小时物理红线: 2,000 步
+    train_steps: int = 2_000
+    
     compile: bool = True
-    eval_iterations: int = 1_000
-    eval_interval: int = 2_000
+    
+    # 高频平滑评估：每 100 步评测一次，每次轻量采样 50 个 batch 
+    eval_interval: int = 100
+    eval_iterations: int = 50
+    
     max_grad_norm: float | None = 1.0
     device: str = "cuda"
     lr: float = 6e-4
@@ -41,7 +50,7 @@ class TrainingConfig:
     adam_eps: float = 1e-9
     wandb_project: str | None = None
     wandb_entity: str | None = None
-    log_interval: int = 20
+    log_interval: int = 10
     save_checkpoints: bool = False
 
 
