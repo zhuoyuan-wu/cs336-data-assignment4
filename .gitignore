@@ -182,3 +182,14 @@ __pycache__/
 
 # 忽略临时输出
 *.log
+
+# 坚决忽略大文件、权重与临时缓存
+local-shared-data/
+*.bin
+*.pt
+*.warc.gz
+*.wet.gz
+train.log
+__pycache__/
+*.pyc
+.pytest_cache/

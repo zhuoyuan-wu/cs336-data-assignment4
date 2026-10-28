@@ -1,0 +1,9 @@
+{
+    "vocab_size": 50257,
+    "context_length": 512,
+    "num_layers": 24,
+    "rope_theta": 10000.0,
+    "d_ff": 3072,
+    "d_model": 1024,
+    "num_heads": 16
+}
